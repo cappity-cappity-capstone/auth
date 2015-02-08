@@ -9,6 +9,10 @@ module Auth
 
       validates :password_salt, presence: true
       validates :password_hash, presence: true
+
+      def as_json(opts = {})
+        super(opts.merge(except: %w(password_hash created_at updated_at)))
+      end
     end
   end
 end

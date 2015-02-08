@@ -71,4 +71,12 @@ describe Auth::Models::User do
       end
     end
   end
+
+  describe '#as_json' do
+    subject { build(:user) }
+
+    it 'does not include the password hash' do
+      expect(subject.as_json.keys).to eq(%w(id name email password_salt))
+    end
+  end
 end
