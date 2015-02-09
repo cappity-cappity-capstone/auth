@@ -10,7 +10,8 @@ module Auth
 
       put '/users/:id/?' do |id|
         status 200
-        Services::Users.update(id, parse_json(req_body)).to_json
+        attrs = parse_json(req_body).except('password_hash', 'password_salt')
+        Services::Users.update(id, attrs).to_json
       end
 
       delete '/users/:id/?' do |id|

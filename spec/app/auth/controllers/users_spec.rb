@@ -104,6 +104,28 @@ describe Auth::Controllers::Users do
             expect(user.name).to eq(name)
             expect(user.email).to eq(email)
           end
+
+          context 'when a password_salt or hash is updated' do
+            let(:password_salt) { 'salt' }
+            let(:password_hash) { 'hash' }
+            let(:options) do
+              {
+                password_salt: password_salt,
+                password_hash: password_hash
+              }
+            end
+
+            it 'does not allow them to be updated' do
+              original_password_salt = user.password_salt
+              original_password_hash = user.password_hash
+              put "/users/#{user.id}", options.to_json
+
+              expect(last_response.status).to eq(200)
+              user.reload
+              expect(user.password_salt).to eq(original_password_salt)
+              expect(user.password_hash).to eq(original_password_hash)
+            end
+          end
         end
       end
     end
