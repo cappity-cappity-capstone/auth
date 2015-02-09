@@ -114,6 +114,13 @@ describe Auth::Services::Users do
             .from('Slim Jim')
             .to('Thin James')
         end
+
+        context 'and a password is being updated' do
+          it 'updates the password hash' do
+            expect { subject.update(user['id'], 'password' => 'trustno1') }
+              .to change { Auth::Models::User.find(user['id']).password_hash }
+          end
+        end
       end
     end
   end

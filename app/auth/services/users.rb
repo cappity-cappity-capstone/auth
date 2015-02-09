@@ -10,7 +10,7 @@ module Auth
         fail Errors::ConflictingModelOptions, "User with email '#{email}' exists" if exists?(email)
         wrap_active_record_errors do
           salt = generate_salt
-          password_hash = hash_password(salt + password)
+          password_hash = hash_password(salt, password)
           Models::User.create!(
             name: name, email: email, password_hash: password_hash, password_salt: salt
           ).as_json
@@ -25,8 +25,12 @@ module Auth
         user = get_user(id)
         email = hash['email']
 
-        if email.present? && (email != user.email) && exists?(email)
+        if (email != user.email) && exists?(email)
           fail Errors::ConflictingModelOptions, "A user with email '#{email}' already exists"
+        end
+
+        if hash['password'].present?
+          hash['password_hash'] = hash_password(user.password_salt, hash.delete('password'))
         end
 
         wrap_active_record_errors { user.update_attributes!(hash) }
@@ -56,8 +60,8 @@ module Auth
         SecureRandom.base64
       end
 
-      def hash_password(pass)
-        Digest::SHA1.hexdigest(pass)
+      def hash_password(salt, pass)
+        Digest::SHA1.hexdigest(salt + pass)
       end
     end
   end
