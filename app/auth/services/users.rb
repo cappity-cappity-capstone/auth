@@ -22,6 +22,10 @@ module Auth
       end
 
       def update(email, hash)
+        if hash['email'].present? && (hash[email] != email) && exists?(hash['email'])
+          fail Errors::ConflictingModelOptions, "A user with email '#{email}' already exists"
+        end
+
         wrap_active_record_errors { get_user(email).update_attributes!(hash) }
       end
 

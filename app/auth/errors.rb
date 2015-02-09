@@ -13,5 +13,8 @@ module Auth
 
     # Raised when an invalid model is referenced.
     NoSuchModel = Class.new(BaseError)
+
+    # Raised when JSON cannot be parsed.
+    MalformedRequestError = Class.new(BaseError)
   end
 end
