@@ -48,8 +48,8 @@ describe Auth::Controllers::Users do
           expect(body['email']).to eq(email)
 
           expect(body['id']).to be_present
-          expect(body['password_salt']).to be_present
 
+          expect(body['password_salt']).to be_blank
           expect(body['password_hash']).to be_blank
           expect(body['password']).to be_blank
         end
