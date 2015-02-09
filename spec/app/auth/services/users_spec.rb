@@ -55,7 +55,7 @@ describe Auth::Services::Users do
   describe '#read' do
     context 'when the email does not exist' do
       it 'raises a NoSuchModel error' do
-        expect { subject.read('not@saved.email') }
+        expect { subject.read(0) }
           .to raise_error(Auth::Errors::NoSuchModel)
       end
     end
@@ -71,11 +71,10 @@ describe Auth::Services::Users do
           'password' => password
         }
       end
-
-      before { subject.create(attributes) }
+      let(:user) { subject.create(attributes) }
 
       it 'returns a Hash representing that user' do
-        expect(subject.read(email).values_at('name', 'email')).to eq([name, email])
+        expect(subject.read(user['id']).values_at('name', 'email')).to eq([name, email])
       end
     end
   end
@@ -83,7 +82,7 @@ describe Auth::Services::Users do
   describe '#update' do
     context 'when the email does not exist' do
       it 'raises a NoSuchModel error' do
-        expect { subject.update('not@saved.email', 'name' => 'A$AP Rocky') }
+        expect { subject.update(0, 'name' => 'A$AP Rocky') }
           .to raise_error(Auth::Errors::NoSuchModel)
       end
     end
@@ -99,20 +98,19 @@ describe Auth::Services::Users do
           'password' => password
         }
       end
-
-      before { subject.create(attributes) }
+      let(:user) { subject.create(attributes) }
 
       context 'but invalid options are passed' do
         it 'raises a BadModelOptions error' do
-          expect { subject.update(email, 'NAME' => 'Thin James') }
+          expect { subject.update(user['id'], 'NAME' => 'Thin James') }
             .to raise_error(Auth::Errors::BadModelOptions)
         end
       end
 
       context 'and valid options are passed' do
         it 'updates the user' do
-          expect { subject.update(email, 'name' => 'Thin James') }
-            .to change { subject.read(email)['name'] }
+          expect { subject.update(user['id'], 'name' => 'Thin James') }
+            .to change { subject.read(user['id'])['name'] }
             .from('Slim Jim')
             .to('Thin James')
         end
@@ -123,7 +121,7 @@ describe Auth::Services::Users do
   describe '#destroy' do
     context 'when the email does not exist' do
       it 'raises a NoSuchModel error' do
-        expect { subject.destroy('not@saved.email') }
+        expect { subject.destroy(0) }
           .to raise_error(Auth::Errors::NoSuchModel)
       end
     end
@@ -139,10 +137,10 @@ describe Auth::Services::Users do
           'password' => password
         }
       end
-      before { subject.create(attributes) }
+      let!(:user) { subject.create(attributes) }
 
       it 'destroys that user' do
-        expect { subject.destroy(email) }
+        expect { subject.destroy(user['id']) }
           .to change { Auth::Models::User.find_by(email: email).nil? }
           .from(false)
           .to(true)

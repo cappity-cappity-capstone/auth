@@ -17,29 +17,32 @@ module Auth
         end
       end
 
-      def read(email)
-        get_user(email).as_json
+      def read(id)
+        get_user(id).as_json
       end
 
-      def update(email, hash)
-        if hash['email'].present? && (hash[email] != email) && exists?(hash['email'])
+      def update(id, hash)
+        user = get_user(id)
+        email = hash['email']
+
+        if email.present? && (email != user.email) && exists?(email)
           fail Errors::ConflictingModelOptions, "A user with email '#{email}' already exists"
         end
 
-        wrap_active_record_errors { get_user(email).update_attributes!(hash) }
+        wrap_active_record_errors { user.update_attributes!(hash) }
       end
 
-      def destroy(email)
-        get_user(email).destroy!
+      def destroy(id)
+        get_user(id).destroy!
       end
 
       def exists?(email)
         Models::User.exists?(email: email)
       end
 
-      def get_user(email)
-        Models::User.find_by(email: email).tap do |user|
-          fail Errors::NoSuchModel, "Unable to find user with email '#{email}'" if user.nil?
+      def get_user(id)
+        Models::User.find_by(id: id).tap do |user|
+          fail Errors::NoSuchModel, "Unable to find user with id '#{id}'" if user.nil?
         end
       end
 

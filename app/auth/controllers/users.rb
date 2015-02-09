@@ -10,16 +10,12 @@ module Auth
 
       put '/users/:id/?' do |id|
         status 200
-        Services::Users.update(email_for_id(id), parse_json(req_body)).to_json
+        Services::Users.update(id, parse_json(req_body)).to_json
       end
 
       delete '/users/:id/?' do |id|
         status 204
-        Services::Users.destroy(email_for_id(id)).to_json
-      end
-
-      def email_for_id(id)
-        Models::User.where(id: id).first.try(&:email)
+        Services::Users.destroy(id).to_json
       end
     end
   end
