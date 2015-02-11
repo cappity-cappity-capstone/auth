@@ -27,7 +27,7 @@ task app_environment: 'db:load_config' do
   require 'auth'
 end
 
-task environment: %w(db:load_config app_environment swap_redis_if_needed)
+task environment: %w(db:load_config app_environment)
 
 desc 'Open a Pry console with the application loaded and database set'
 task shell: :environment do
