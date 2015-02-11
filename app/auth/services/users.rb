@@ -2,6 +2,8 @@ module Auth
   module Services
     # This service handles the CRUD lifecycle for users.
     module Users
+      include Base
+
       module_function
 
       def create(hash)
@@ -48,12 +50,6 @@ module Auth
         Models::User.find_by(id: id).tap do |user|
           fail Errors::NoSuchModel, "Unable to find user with id '#{id}'" if user.nil?
         end
-      end
-
-      def wrap_active_record_errors
-        yield
-      rescue ActiveRecord::UnknownAttributeError, ActiveRecord::RecordInvalid => ex
-        raise Errors::BadModelOptions, ex
       end
 
       def generate_salt
