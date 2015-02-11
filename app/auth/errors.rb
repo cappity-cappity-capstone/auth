@@ -19,5 +19,8 @@ module Auth
 
     # Raised when a bad password is given.
     BadPassword = Class.new(BaseError)
+
+    # Raised a user needs to be logged in but isn't.
+    AuthError = Class.new(BaseError)
   end
 end
