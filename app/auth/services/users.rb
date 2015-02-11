@@ -42,6 +42,16 @@ module Auth
         get_user(id).destroy!
       end
 
+      def authenticate(email, password)
+        user = Models::User.find_by(email: email)
+        return unless user && (user.password_hash == hash_password(user.password_salt, password))
+        user
+      end
+
+      def for_session(key)
+        Models::Session.active.includes(:user).find_by(key: key).try(:user)
+      end
+
       def exists?(email)
         Models::User.exists?(email: email)
       end
@@ -57,7 +67,7 @@ module Auth
       end
 
       def hash_password(salt, pass)
-        Digest::SHA1.hexdigest(salt + pass)
+        Digest::SHA1.hexdigest([salt, pass].join)
       end
     end
   end
