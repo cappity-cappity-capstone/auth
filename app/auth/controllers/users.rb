@@ -22,6 +22,13 @@ module Auth
         status 204
         destroy(id).to_json
       end
+
+      post '/users/:id/associate/?' do |id|
+        ensure_user_logged_in! id
+        status 201
+        control_server = Services::ControlServers.for_ip(request.ip)
+        associate_control_server(logged_in_user.id, control_server['uuid'])
+      end
     end
   end
 end
