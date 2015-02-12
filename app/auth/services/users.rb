@@ -42,6 +42,18 @@ module Auth
         get_user(id).destroy!
       end
 
+      def associate_control_server(id, control_server_uuid)
+        if (control_server = Models::ControlServer.find_by(uuid: control_server_uuid)).nil?
+          fail Errors::NoSuchModel, "ControlServer uuid: #{control_server_uuid}"
+        elsif (user = Models::User.find_by(id: id)).nil?
+          fail Errors::NoSuchModel, "User id: #{id}"
+        else
+          wrap_active_record_errors do
+            user.update_attributes!(control_server_id: control_server.id)
+          end
+        end
+      end
+
       def authenticate(email, password)
         user = Models::User.find_by(email: email)
         return unless user && (user.password_hash == hash_password(user.password_salt, password))
