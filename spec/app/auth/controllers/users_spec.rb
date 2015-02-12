@@ -76,7 +76,7 @@ describe Auth::Controllers::Users do
       context 'but the user options are invalid' do
         let(:options) { { EMAIL: 'jimmy@jimmy.jimmy' } }
 
-        it 'returns a 400', :cur do
+        it 'returns a 400' do
           put "/users/#{user.id}", options.to_json
 
           expect(last_response.status).to eq(400)
