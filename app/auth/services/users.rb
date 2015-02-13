@@ -2,6 +2,8 @@ module Auth
   module Services
     # This service handles the CRUD lifecycle for users.
     module Users
+      include Base
+
       module_function
 
       def create(hash)
@@ -40,6 +42,16 @@ module Auth
         get_user(id).destroy!
       end
 
+      def authenticate(email, password)
+        user = Models::User.find_by(email: email)
+        return unless user && (user.password_hash == hash_password(user.password_salt, password))
+        user
+      end
+
+      def for_session(key)
+        Models::Session.active.includes(:user).find_by(key: key).try(:user)
+      end
+
       def exists?(email)
         Models::User.exists?(email: email)
       end
@@ -50,18 +62,12 @@ module Auth
         end
       end
 
-      def wrap_active_record_errors
-        yield
-      rescue ActiveRecord::UnknownAttributeError, ActiveRecord::RecordInvalid => ex
-        raise Errors::BadModelOptions, ex
-      end
-
       def generate_salt
         SecureRandom.base64
       end
 
       def hash_password(salt, pass)
-        Digest::SHA1.hexdigest(salt + pass)
+        Digest::SHA1.hexdigest([salt, pass].join)
       end
     end
   end

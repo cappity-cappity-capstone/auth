@@ -4,6 +4,8 @@ module Auth
     class User < ActiveRecord::Base
       self.table_name = 'users'
 
+      has_many :sessions
+
       validates :name, presence: true
       validates :email, presence: true, uniqueness: true
 

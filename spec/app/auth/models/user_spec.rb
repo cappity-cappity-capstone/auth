@@ -79,4 +79,16 @@ describe Auth::Models::User do
       expect(subject.as_json.keys).to eq(%w(id name email))
     end
   end
+
+  describe '#sessions' do
+    let!(:session_one) { create(:session, user: subject, expires_on: Time.now - 1.day) }
+    let!(:session_two) { create(:session, user: subject, expires_on: Time.now + 1.day) }
+
+    subject { create(:user) }
+
+    it 'returns a list of that user\'s sessions' do
+      expect(subject.sessions).to eq([session_one, session_two])
+      expect(subject.sessions.active).to eq([session_two])
+    end
+  end
 end

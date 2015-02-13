@@ -58,16 +58,20 @@ describe Auth::Controllers::Users do
   end
 
   describe 'PUT /users/:id/' do
-    context 'when no such id is exists' do
-      it 'returns a 404' do
-        put '/users/0', {}.to_json
+    let(:user) { create(:user) }
 
-        expect(last_response.status).to eq(404)
+    context 'when the user is not logged in' do
+      it 'returns a 403' do
+        put "/users/#{user.id}", {}.to_json
+
+        expect(last_response.status).to eq(403)
       end
     end
 
-    context 'when the given id exists' do
-      let(:user) { create(:user) }
+    context 'when the user is logged in' do
+      let(:session) { create(:session, user: user) }
+
+      before { set_cookie "session_key=#{session.key}" }
 
       context 'but the user options are invalid' do
         let(:options) { { EMAIL: 'jimmy@jimmy.jimmy' } }
@@ -132,16 +136,20 @@ describe Auth::Controllers::Users do
   end
 
   describe 'DELETE /users/:id/' do
-    context 'when the user does not exist' do
-      it 'returns a 404' do
-        delete '/users/0'
+    let(:user) { create(:user) }
 
-        expect(last_response.status).to eq(404)
+    context 'when the user is not logged in' do
+      it 'returns a 403' do
+        delete "/users/#{user.id}"
+
+        expect(last_response.status).to eq(403)
       end
     end
 
     context 'when the users exists' do
-      let(:user) { create(:user) }
+      let(:session) { create(:session, user: user) }
+
+      before { set_cookie "session_key=#{session.key}" }
 
       it 'deletes the user and returns a 204' do
         delete "/users/#{user.id}"

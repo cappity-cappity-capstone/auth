@@ -12,6 +12,10 @@ module Auth
         case err
         when Errors::BadModelOptions
           status 400
+        when Errors::BadPassword
+          status 401
+        when Errors::AuthError
+          status 403
         when Errors::NoSuchModel
           status 404
         when Errors::ConflictingModelOptions
@@ -21,6 +25,19 @@ module Auth
         end
 
         { class: err.class.name, message: err.message }.to_json
+      end
+
+      def logged_in_user
+        @logged_in_user ||= Services::Users.for_session(request.cookies['session_key'])
+      end
+
+      def ensure_user_logged_in!(id)
+        if logged_in_user.nil?
+          fail Errors::AuthError, 'No user logged in'
+        elsif logged_in_user.id != id.to_i
+          fail Errors::AuthError, %(Logged in user's id "#{logged_in_user.id}"
+                                    does not match expected id "#{id}")
+        end
       end
 
       def parse_json(body)

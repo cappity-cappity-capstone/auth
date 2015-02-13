@@ -154,4 +154,64 @@ describe Auth::Services::Users do
       end
     end
   end
+
+  describe '#authenticate' do
+    let(:name) { 'Lol Aol' }
+    let(:email) { 'lol@aol.email' }
+    let(:given_password) { '' }
+    let(:saved_password) { 'yahooligans' }
+    let(:attributes) { { 'name' => name, 'email' => email, 'password' => saved_password } }
+
+    context 'when the user does not exist' do
+      it 'returns false' do
+        expect(subject.authenticate(email, given_password)).to be_falsey
+      end
+    end
+
+    context 'when the user exists' do
+      let!(:user) { subject.create(attributes) }
+
+      context 'but the password is not the user\'s password' do
+        let(:given_password) { "~#{saved_password}~" }
+
+        it 'returns false' do
+          expect(subject.authenticate(email, given_password)).to be_falsey
+        end
+      end
+
+      context 'and the password is the user\'s password' do
+        let(:given_password) { saved_password }
+
+        it 'returns true' do
+          expect(subject.authenticate(email, given_password)).to be_truthy
+        end
+      end
+    end
+  end
+
+  describe '#for_session' do
+    context 'when the given session has no associated user' do
+      it 'returns nil' do
+        expect(subject.for_session('some key')).to be_nil
+      end
+    end
+
+    context 'when the given session has an associated user' do
+      context 'but it is expired' do
+        let(:session) { create(:session, expires_on: 1.day.ago) }
+
+        it 'returns nil' do
+          expect(subject.for_session(session.key)).to be_nil
+        end
+      end
+
+      context 'and it is not expired' do
+        let(:session) { create(:session) }
+
+        it 'returns that user' do
+          expect(subject.for_session(session.key)).to eq(session.user)
+        end
+      end
+    end
+  end
 end
