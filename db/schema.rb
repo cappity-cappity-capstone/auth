@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150209023628) do
+ActiveRecord::Schema.define(version: 20150211194640) do
+
+  create_table "control_servers", force: :cascade do |t|
+    t.string   "uuid",       null: false
+    t.string   "ip",         null: false
+    t.integer  "port",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "control_servers", ["uuid"], name: "index_control_servers_on_uuid", unique: true
 
   create_table "sessions", force: :cascade do |t|
     t.string   "key",        null: false
@@ -24,14 +34,16 @@ ActiveRecord::Schema.define(version: 20150209023628) do
   add_index "sessions", ["user_id"], name: "index_sessions_on_user_id"
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",          null: false
-    t.string   "email",         null: false
-    t.string   "password_salt", null: false
-    t.string   "password_hash", null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "name",              null: false
+    t.string   "email",             null: false
+    t.string   "password_salt",     null: false
+    t.string   "password_hash",     null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.integer  "control_server_id"
   end
 
+  add_index "users", ["control_server_id"], name: "index_users_on_control_server_id"
   add_index "users", ["email"], name: "index_users_on_email", unique: true
 
 end

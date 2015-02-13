@@ -76,7 +76,7 @@ describe Auth::Models::User do
     subject { build(:user) }
 
     it 'does not include the password hash' do
-      expect(subject.as_json.keys).to eq(%w(id name email))
+      expect(subject.as_json.keys).to eq(%w(id name email control_server))
     end
   end
 
@@ -89,6 +89,25 @@ describe Auth::Models::User do
     it 'returns a list of that user\'s sessions' do
       expect(subject.sessions).to eq([session_one, session_two])
       expect(subject.sessions.active).to eq([session_two])
+    end
+  end
+
+  describe '#control_server' do
+    let(:control_server) { create(:control_server) }
+    subject { create(:user, control_server: control_server) }
+
+    context 'when it is not associated with a control_server' do
+      let(:control_server) { nil }
+
+      it 'returns nil' do
+        expect(subject.control_server).to be_nil
+      end
+    end
+
+    context 'when it is associated with a control server' do
+      it 'returns that control server' do
+        expect(subject.control_server).to eq(control_server)
+      end
     end
   end
 end

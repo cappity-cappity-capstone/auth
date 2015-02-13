@@ -214,4 +214,38 @@ describe Auth::Services::Users do
       end
     end
   end
+
+  describe '.associate_control_server' do
+    let(:control_server) { create(:control_server) }
+    let(:user) { create(:user, control_server: nil) }
+
+    context 'when the user cannot be found' do
+      let(:user) { build(:user, control_server: nil) }
+
+      it 'raises an error' do
+        expect { subject.associate_control_server(user.id, control_server.uuid) }
+          .to raise_error(Auth::Errors::NoSuchModel)
+      end
+    end
+
+    context 'when the user can be found' do
+      context 'when the control_server cannot be found' do
+        let(:control_server) { build(:control_server) }
+
+        it 'raises an error' do
+          expect { subject.associate_control_server(user.id, control_server.uuid) }
+            .to raise_error(Auth::Errors::NoSuchModel)
+        end
+      end
+
+      context 'when the control_server can be found' do
+        it 'associates the user with the control_server' do
+          expect { subject.associate_control_server(user.id, control_server.uuid) }
+            .to change { user.tap(&:reload).control_server }
+            .from(nil)
+            .to(control_server)
+        end
+      end
+    end
+  end
 end

@@ -159,4 +159,44 @@ describe Auth::Controllers::Users do
       end
     end
   end
+
+  describe 'POST /users/:id/associate/' do
+    let(:user) { create(:user, control_server: nil) }
+
+    context 'when the user is not logged in' do
+      it 'returns a 403' do
+        post "/users/#{user.id}/associate"
+
+        expect(last_response.status).to eq(403)
+      end
+    end
+
+    context 'when the user is logged in' do
+      let(:session) { create(:session, user: user) }
+
+      before { set_cookie "session_key=#{session.key}" }
+
+      context 'but there is no control_server at the user\'s ip' do
+        it 'returns a 404' do
+          post "/users/#{user.id}/associate"
+
+          expect(last_response.status).to eq(404)
+        end
+      end
+
+      context 'and there is a control_server at the user\'s ip' do
+        let(:ip) { '24.21.99.2' }
+        let!(:contol_server) { create(:control_server, ip: ip) }
+
+        before { env 'REMOTE_ADDR', ip }
+
+        it 'associates the user with that control server', :cur do
+          post "/users/#{user.id}/associate"
+
+          expect(last_response.status).to eq(201)
+          expect(user.tap(&:reload).control_server).to eq(contol_server)
+        end
+      end
+    end
+  end
 end
