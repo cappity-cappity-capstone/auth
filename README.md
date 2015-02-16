@@ -12,8 +12,47 @@ This should help when debugging requests.
 ### Users
 
 This resource implements the create, update, and destroy actions for a user.
-Also, this resource contains an action to associate a user with a control server.
+Also, this resource contains an action to associate a user with a control server and to get the currently logged in user.
 All paths are namespaced under `/auth/users`.
+
+#### Get the currently logged in user
+
+* Method: `GET`
+* Path: `/auth/users/logged_in`
+* Response Codes:
+  * 200 - User was found
+  * 404 - No user logged in
+
+```
+$ curl --verbose \
+       --request GET \
+       --header 'Cookie: session_key=nYiaeeea7dvsr14RL1qC%2Fg%3D%3D;' \
+       http://localhost:4567/auth/users/logged_in
+
+* Hostname was NOT found in DNS cache
+*   Trying ::1...
+* connect to ::1 port 4567 failed: Connection refused
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 4567 (#0)
+> GET /auth/users/logged_in HTTP/1.1
+> User-Agent: curl/7.37.1
+> Host: localhost:4567
+> Accept: */*
+> Cookie: session_key=nYiaeeea7dvsr14RL1qC%2Fg%3D%3D;
+>
+< HTTP/1.1 200 OK
+< Date: Mon, 16 Feb 2015 14:08:40 GMT
+< Status: 200 OK
+< Connection: close
+< Content-Type: application/json
+< Content-Length: 49
+< X-Content-Type-Options: nosniff
+<
+* Closing connection 0
+{"id":1,"name":"Jonny","email":"jonny@gmail.com"}
+```
+
+session_key=nYiaeeea7dvsr14RL1qC%2Fg%3D%3D;
 
 #### Create a new user
 

@@ -5,6 +5,12 @@ module Auth
     class Users < Base
       helpers { include Services::Users }
 
+      get '/users/logged_in/?' do
+        fail Errors::NoSuchModel, 'No user is logged in' if logged_in_user.nil?
+        status 200
+        logged_in_user.to_json
+      end
+
       post '/users/?' do
         status 201
         create(parse_json(req_body)).to_json

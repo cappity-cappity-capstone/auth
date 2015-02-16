@@ -5,6 +5,34 @@ describe Auth::Controllers::Users do
 
   let(:app) { described_class.new }
 
+  describe 'GET /users/logged_in/' do
+    let(:user) { create(:user) }
+
+    context 'when no user is logged in' do
+      it 'returns a 404' do
+        get '/users/logged_in/'
+
+        expect(last_response.status).to eq(404)
+      end
+    end
+
+    context 'when a user is logged in' do
+      let(:session) { create(:session, user: user) }
+      let(:body) { JSON.parse(last_response.body) }
+
+      before { set_cookie "session_key=#{session.key}" }
+
+      it 'returns that user' do
+        get '/users/logged_in/'
+
+        expect(last_response.status).to eq(200)
+        expect(body['id']).to eq(user.id)
+        expect(body['name']).to eq(user.name)
+        expect(body['email']).to eq(user.email)
+      end
+    end
+  end
+
   describe 'POST /users/' do
     context 'when invalid options are passed' do
       let(:options) { { invalid_option: 400 } }
@@ -190,7 +218,7 @@ describe Auth::Controllers::Users do
 
         before { env 'REMOTE_ADDR', ip }
 
-        it 'associates the user with that control server', :cur do
+        it 'associates the user with that control server' do
           post "/users/#{user.id}/associate"
 
           expect(last_response.status).to eq(201)
