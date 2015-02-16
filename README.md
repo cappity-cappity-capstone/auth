@@ -319,7 +319,7 @@ $ curl --verbose \
 * Closing connection 0
 ```
 
-## Contorl Servers
+## Control Servers
 
 This resource implements the create and destroy actions for a Control Servers.
 All paths are namespaced under `/auth/control_servers`.
