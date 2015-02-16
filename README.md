@@ -118,7 +118,7 @@ Example:
 ```shell
 $ curl --verbose \
        --request PUT \
-       --header 'Cookie: session_key=1WHTgv9hdYmwpl16PZ3t0A%3D%3D;' \
+       --header 'Cookie: session_key=z03ksA2ARNsCUUof378LkA%3D%3D;' \
        --data @- \
        http://localhost:4567/auth/users/1 <<EOF
 {
@@ -135,21 +135,21 @@ EOF
 > User-Agent: curl/7.37.1
 > Host: localhost:4567
 > Accept: */*
-> Cookie: session_key=1WHTgv9hdYmwpl16PZ3t0A%3D%3D;
+> Cookie: session_key=z03ksA2ARNsCUUof378LkA%3D%3D;
 > Content-Length: 17
 > Content-Type: application/x-www-form-urlencoded
 >
 * upload completely sent off: 17 out of 17 bytes
 < HTTP/1.1 200 OK
-< Date: Sun, 15 Feb 2015 22:29:18 GMT
+< Date: Mon, 16 Feb 2015 14:22:28 GMT
 < Status: 200 OK
 < Connection: close
 < Content-Type: application/json
-< Content-Length: 4
+< Content-Length: 47
 < X-Content-Type-Options: nosniff
 <
 * Closing connection 0
-true
+{"id":1,"name":"Jon","email":"jonny@gmail.com"}
 ```
 
 ### Destroy a User
@@ -203,7 +203,7 @@ Example:
 ```shell
 $ curl --verbose \
        --request POST \
-       --header 'Cookie: session_key=1WHTgv9hdYmwpl16PZ3t0A%3D%3D;' \
+       --header 'Cookie: session_key=z03ksA2ARNsCUUof378LkA%3D%3D;' \
        http://localhost:4567/auth/users/1/associate
 
 * Hostname was NOT found in DNS cache
@@ -215,17 +215,18 @@ $ curl --verbose \
 > User-Agent: curl/7.37.1
 > Host: localhost:4567
 > Accept: */*
-> Cookie: session_key=1WHTgv9hdYmwpl16PZ3t0A%3D%3D;
+> Cookie: session_key=z03ksA2ARNsCUUof378LkA%3D%3D;
 >
 < HTTP/1.1 201 Created
-< Date: Sun, 15 Feb 2015 22:53:45 GMT
+< Date: Mon, 16 Feb 2015 14:24:11 GMT
 < Status: 201 Created
 < Connection: close
 < Content-Type: application/json
-< Content-Length: 0
+< Content-Length: 202
 < X-Content-Type-Options: nosniff
 <
 * Closing connection 0
+{"id":1,"name":"Jon","email":"jonny@gmail.com","control_server":{"id":1,"uuid":"SOME-UUID","ip":"127.0.0.1","port":23456,"created_at":"2015-02-16T14:23:14.342Z","updated_at":"2015-02-16T14:23:23.543Z"}}
 ```
 
 ## Sessions
@@ -400,13 +401,13 @@ EOF
 >
 * upload completely sent off: 17 out of 17 bytes
 < HTTP/1.1 200 OK
-< Date: Sun, 15 Feb 2015 22:45:26 GMT
+< Date: Mon, 16 Feb 2015 14:23:23 GMT
 < Status: 200 OK
 < Connection: close
 < Content-Type: application/json
-< Content-Length: 4
+< Content-Length: 57
 < X-Content-Type-Options: nosniff
 <
 * Closing connection 0
-true
+{"id":1,"uuid":"SOME-UUID","ip":"127.0.0.1","port":23456}
 ```

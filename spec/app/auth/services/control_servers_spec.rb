@@ -36,6 +36,27 @@ describe Auth::Services::ControlServers do
     end
   end
 
+  describe '.read' do
+    let(:uuid) { 'SOME-UUID' }
+    let(:contol_server) { build(:control_server, uuid: uuid) }
+
+    context 'when the uuid cannot be found' do
+      it 'raises a NoSuchModel error' do
+        expect { subject.read(uuid) }
+          .to raise_error(Auth::Errors::NoSuchModel)
+      end
+    end
+
+    context 'when the uuid can be found' do
+      before { contol_server.save! }
+
+      it 'returns that control server' do
+        expect(subject.read(uuid).values_at('uuid', 'ip', 'port'))
+          .to eq([contol_server.uuid, contol_server.ip, contol_server.port])
+      end
+    end
+  end
+
   describe '.update' do
     let(:control_server) { build(:control_server, ip: '123.45.67.80') }
     let(:ip) { '123.45.67.89' }

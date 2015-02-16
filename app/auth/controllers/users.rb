@@ -21,6 +21,7 @@ module Auth
         status 200
         attrs = parse_json(req_body).except('password_hash', 'password_salt')
         update(id, attrs).to_json
+        read(id).to_json
       end
 
       delete '/users/:id/?' do |id|
@@ -34,6 +35,7 @@ module Auth
         status 201
         control_server = Services::ControlServers.for_ip(request.ip)
         associate_control_server(logged_in_user.id, control_server['uuid'])
+        read(id).to_json
       end
     end
   end
