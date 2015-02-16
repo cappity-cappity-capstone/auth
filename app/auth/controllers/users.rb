@@ -20,7 +20,7 @@ module Auth
         ensure_user_logged_in! id
         status 200
         attrs = parse_json(req_body).except('password_hash', 'password_salt')
-        update(id, attrs).to_json
+        update(id, attrs)
         read(id).to_json
       end
 
