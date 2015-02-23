@@ -10,7 +10,7 @@ module Auth
 
       error do |err|
         case err
-        when Errors::BadModelOptions
+        when Errors::BadModelOptions, Errors::MalformedRequestError
           status 400
         when Errors::BadPassword
           status 401

@@ -5,6 +5,12 @@ module Auth
     class Users < Base
       helpers { include Services::Users }
 
+      get '/users/logged_in/?' do
+        fail Errors::NoSuchModel, 'No user is logged in' if logged_in_user.nil?
+        status 200
+        logged_in_user.to_json
+      end
+
       post '/users/?' do
         status 201
         create(parse_json(req_body)).to_json
@@ -14,7 +20,8 @@ module Auth
         ensure_user_logged_in! id
         status 200
         attrs = parse_json(req_body).except('password_hash', 'password_salt')
-        update(id, attrs).to_json
+        update(id, attrs)
+        read(id).to_json
       end
 
       delete '/users/:id/?' do |id|
@@ -28,6 +35,7 @@ module Auth
         status 201
         control_server = Services::ControlServers.for_ip(request.ip)
         associate_control_server(logged_in_user.id, control_server['uuid'])
+        read(id).to_json
       end
     end
   end

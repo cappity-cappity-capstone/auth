@@ -45,8 +45,8 @@ end
 
 desc 'Run the Docker build'
 task :docker do
-  system("docker build -t backend:#{SHA} .") || fail('Unable to build backend')
-  system("docker tag -f backend:#{SHA} backend:latest") || fail('Unable to tag docker image')
+  system("docker build -t auth:#{SHA} .") || fail('Unable to build auth')
+  system("docker tag -f auth:#{SHA} auth:latest") || fail('Unable to tag docker image')
 end
 
 desc 'Run the specs and quality metrics'

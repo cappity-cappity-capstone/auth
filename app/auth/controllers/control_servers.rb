@@ -13,7 +13,8 @@ module Auth
 
       put '/control_servers/:uuid/?' do |uuid|
         status 200
-        update(uuid, parse_json(req_body).merge('ip' => request.ip)).to_json
+        update(uuid, parse_json(req_body).merge('ip' => request.ip))
+        read(uuid).to_json
       end
     end
   end
