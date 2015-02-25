@@ -1,3 +1,7 @@
+module Auth
+  autoload :Config, 'auth/config'
+end
+
 Bundler.require(:default, (ENV['APP_ENV'] || 'development').to_sym)
 
 # This module acts as the top-level namespace for the application.
