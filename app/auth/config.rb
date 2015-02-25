@@ -1,3 +1,4 @@
+# This module acts as the top-level namespace for the application.
 module Auth
   # Loads the config from a file
   module Config
@@ -15,7 +16,7 @@ module Auth
       if File.exist?(CONFIG_FILE)
         @config = YAML.load(File.read(CONFIG_FILE)) || {}
       else
-        fail "Missing constants file"
+        fail 'Missing constants file'
       end
     end
   end

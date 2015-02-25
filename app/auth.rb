@@ -1,3 +1,4 @@
+# This module acts as the top-level namespace for the application.
 module Auth
   autoload :Config, 'auth/config'
 end

@@ -1,6 +1,8 @@
 $LOAD_PATH << File.expand_path('app', '.')
 ENV['APP_ENV'] ||= 'test'
 
+require 'auth/config'
+
 Bundler.require(:default, ENV['APP_ENV'].to_sym)
 
 require 'auth'
