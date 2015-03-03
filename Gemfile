@@ -6,6 +6,7 @@ gem 'activerecord', '~> 4.2.0'
 gem 'unicorn', '~> 4.8.3'
 gem 'pry', '~> 0.10.1'
 gem 'sinatra-activerecord', '~> 2.0.4'
+gem 'rack-cors'
 
 group :development, :test do
   gem 'rspec', '~> 3.1.0'
