@@ -16,6 +16,15 @@ module Auth
         update(uuid, parse_json(req_body).merge('ip' => request.ip))
         read(uuid).to_json
       end
+
+      get '/control_servers/exists/?' do
+        begin
+          status 200
+          Services::ControlServers.for_ip(request.ip).to_json
+        rescue Errors::NoSuchModel
+          status 404
+        end
+      end
     end
   end
 end
