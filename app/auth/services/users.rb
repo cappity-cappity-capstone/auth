@@ -25,7 +25,7 @@ module Auth
 
       def update(id, hash)
         user = get_user(id)
-        email = hash['email'].try(:downcase)
+        email = hash.fetch('email', '').tap(&:downcase!)
 
         if (email != user.email) && exists?(email)
           fail Errors::ConflictingModelOptions, "A user with email '#{email}' already exists"
