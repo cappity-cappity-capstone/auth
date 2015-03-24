@@ -49,5 +49,16 @@ task :docker do
   system("docker tag -f auth:#{SHA} auth:latest") || fail('Unable to tag docker image')
 end
 
+namespace :one_offs do
+  desc 'Convert every email in the database to lower case'
+  task make_emails_lower_case_2015_03_05: :environment do
+    ActiveRecord::Base.transaction do
+      Auth::Models::User.where.not(email: nil).find_each do |user|
+        user.update_attributes!(email: user.email.downcase)
+      end
+    end
+  end
+end
+
 desc 'Run the specs and quality metrics'
 task default: [:spec, :quality]

@@ -411,3 +411,41 @@ EOF
 * Closing connection 0
 {"id":1,"uuid":"SOME-UUID","ip":"127.0.0.1","port":23456}
 ```
+
+### Check if a control server exists
+
+* Method: `GET`
+* Path: `/auth/control_servers/exists/`
+* Response Codes:
+  * 200 - Control server exists at current ip (returned in body)
+  * 404 - Control server does not exist
+
+```
+$ curl --verbose \
+       --request GET \
+       http://localhost:4567/auth/control_servers/exists
+
+* Hostname was NOT found in DNS cache
+*   Trying ::1...
+* connect to ::1 port 4567 failed: Connection refused
+*   Trying fe80::1...
+* connect to fe80::1 port 4567 failed: Connection refused
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 4567 (#0)
+> GET /auth/control_servers/exists HTTP/1.1
+> User-Agent: curl/7.37.1
+> Host: localhost:4567
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Date: Fri, 06 Mar 2015 01:32:56 GMT
+< Status: 200 OK
+< Connection: close
+< Content-Type: application/json
+< Content-Length: 59
+< X-Content-Type-Options: nosniff
+<
+* Closing connection 0
+{"id":1,"uuid":"todds_laptop","ip":"127.0.0.1","port":4567}%
+```
+

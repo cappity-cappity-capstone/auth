@@ -90,4 +90,31 @@ describe Auth::Controllers::ControlServers do
       end
     end
   end
+
+  describe 'GET /control_servers/exists/' do
+    let(:ip) { '88.223.72.65' }
+
+    before { env 'REMOTE_ADDR', ip }
+
+    context 'control server does exist for this ip' do
+      let(:control_server) { build(:control_server, ip: ip) }
+
+      before { control_server.save! }
+
+      it 'returns the control server' do
+        get '/control_servers/exists'
+
+        expect(last_response.status).to eq(200)
+        expect(JSON.parse(last_response.body)).to eq(control_server.as_json)
+      end
+    end
+
+    context 'no control exists' do
+      it 'returns not found' do
+        get '/control_servers/exists'
+
+        expect(last_response.status).to eq(404)
+      end
+    end
+  end
 end
