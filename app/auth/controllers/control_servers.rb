@@ -17,6 +17,12 @@ module Auth
         read(uuid).to_json
       end
 
+      post '/control_servers/:uuid/alert/?' do |uuid|
+        status 201
+        notify_users(uuid, parse_json(req_body))
+        ""
+      end
+
       get '/control_servers/exists/?' do
         begin
           status 200
