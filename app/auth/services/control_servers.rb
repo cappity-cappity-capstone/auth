@@ -28,10 +28,26 @@ module Auth
         end
       end
 
+      def notify_users(uuid, data)
+        control_server = get_control_server(uuid)
+
+        alert = data['alert']
+
+        fail Errors::MalformedRequestError, "Bad alert: #{data}" if alert.nil? || alert['name'].nil?
+
+        control_server.users.each do |user|
+          Services::SendEmail.send(
+            user.email,
+            "Alert fired for #{alert['name']}!",
+            'All related devices have been turned off or locked.'
+          )
+        end
+      end
+
       def for_ip(ip)
-        control_server = Models::ControlServer.find_by(ip: ip)
-        fail Errors::NoSuchModel, "No such ip: #{ip}" unless control_server
-        control_server.as_json
+        Models::ControlServer.find_by(ip: ip).tap do |control_server|
+          fail Errors::NoSuchModel, "No such ip: #{ip}" unless control_server
+        end.as_json
       end
 
       def get_control_server(uuid)

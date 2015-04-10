@@ -5,5 +5,6 @@ module Auth
     autoload :ControlServers, 'auth/services/control_servers'
     autoload :Sessions, 'auth/services/sessions'
     autoload :Users, 'auth/services/users'
+    autoload :SendEmail, 'auth/services/send_email'
   end
 end
