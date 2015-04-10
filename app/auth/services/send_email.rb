@@ -1,5 +1,6 @@
 Mail.defaults do
-  delivery_method :smtp, {
+  delivery_method(
+    :smtp,
     address: Auth::Config.config['mail_smtp_server'],
     port: Auth::Config.config['mail_smtp_port'],
     domain: 'cappitycappitycapstone.com',
@@ -7,11 +8,12 @@ Mail.defaults do
     password: Auth::Config.config['mail_smtp_password'],
     authentication: 'plain',
     enable_starttls_auto: true
-  }
+  )
 end
 
 module Auth
   module Services
+    # Will send out alerts from the production account to whomever
     module SendEmail
       include Base
       FROM = 'Alert <alert@cappitycappitycapstone.com>'

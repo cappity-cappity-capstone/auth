@@ -39,7 +39,7 @@ module Auth
           Services::SendEmail.send(
             user.email,
             "Alert fired for #{alert['name']}!",
-            "All related devices have been turned off or locked."
+            'All related devices have been turned off or locked.'
           )
         end
       end
