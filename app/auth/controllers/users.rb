@@ -37,8 +37,8 @@ module Auth
           associate_control_server(logged_in_user.id, control_server['uuid'])
           read(logged_in_user.id).to_json
         else
-          status 404
-          { message: "Please login" }.to_json
+          status 403
+          { message: 'Please login' }.to_json
         end
       end
     end

@@ -188,12 +188,12 @@ describe Auth::Controllers::Users do
     end
   end
 
-  describe 'POST /users/:id/associate/' do
+  describe 'POST /users/associate/' do
     let(:user) { create(:user, control_server: nil) }
 
     context 'when the user is not logged in' do
       it 'returns a 403' do
-        post "/users/#{user.id}/associate"
+        post '/users/associate'
 
         expect(last_response.status).to eq(403)
       end
@@ -206,7 +206,7 @@ describe Auth::Controllers::Users do
 
       context 'but there is no control_server at the user\'s ip' do
         it 'returns a 404' do
-          post "/users/#{user.id}/associate"
+          post '/users/associate'
 
           expect(last_response.status).to eq(404)
         end
@@ -219,7 +219,7 @@ describe Auth::Controllers::Users do
         before { env 'REMOTE_ADDR', ip }
 
         it 'associates the user with that control server' do
-          post "/users/#{user.id}/associate"
+          post '/users/associate'
 
           expect(last_response.status).to eq(201)
           expect(user.tap(&:reload).control_server).to eq(contol_server)
