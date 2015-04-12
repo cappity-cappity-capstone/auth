@@ -30,12 +30,16 @@ module Auth
         destroy(id).to_json
       end
 
-      post '/users/:id/associate/?' do |id|
-        ensure_user_logged_in! id
-        status 201
-        control_server = Services::ControlServers.for_ip(request.ip)
-        associate_control_server(logged_in_user.id, control_server['uuid'])
-        read(id).to_json
+      post '/users/associate/?' do
+        if logged_in_user
+          status 201
+          control_server = Services::ControlServers.for_ip(request.ip)
+          associate_control_server(logged_in_user.id, control_server['uuid'])
+          read(logged_in_user.id).to_json
+        else
+          status 404
+          { message: "Please login" }.to_json
+        end
       end
     end
   end
